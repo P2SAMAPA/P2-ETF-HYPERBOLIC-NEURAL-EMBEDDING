@@ -99,37 +99,32 @@ tab1, tab2 = st.tabs(["🏆 Best Window per ETF", "🔍 Explore by Window"])
 with tab1:
     st.header("🏆 Top ETFs — Hyperbolic Embedding Signal")
 
-    with st.expander("📖 Poincaré Disk Methodology (Nickel & Kiela 2017)", expanded=True):
-        st.markdown(f"""
+    with st.expander("📖 Poincare Disk Methodology (Nickel and Kiela 2017)", expanded=True):
+        st.markdown("""
 **Why hyperbolic space?** ETF correlations have a latent hierarchy
-(broad market → sector → sub-sector). Euclidean geometry needs O(N) dimensions
+(broad market to sector to sub-sector). Euclidean geometry needs O(N) dimensions
 to represent an N-node tree faithfully. Hyperbolic geometry needs just **2**.
 
-**Poincaré disk** ℍ² = open unit disk with metric:
-```
-ds² = 4/(1−|z|²)² · (dx² + dy²)
-```
-Distances grow exponentially toward the boundary — naturally encoding hierarchy.
+**Poincare disk** is the open unit disk with metric that grows exponentially
+toward the boundary, naturally encoding hierarchical structure.
 
-**Poincaré distance:**
-```
-d(u,v) = arccosh(1 + 2|u−v|² / ((1−|u|²)(1−|v|²)))
-```
+**Poincare distance** between two points u and v in the disk:
+measures how far apart they are in hyperbolic geometry.
 
-**Training:** Riemannian SGD minimises Σ(d(zᵢ,zⱼ) − target_{ij})²
-with Riemannian gradient: grad_R = ((1−|z|²)²/4)·grad_E
+**Training:** Riemannian SGD minimises the sum of squared distance errors.
+The Riemannian gradient is the Euclidean gradient scaled by ((1 minus norm squared) / 2) squared.
 
 **Score components:**
 
 | Component | Meaning | Signal |
 |-----------|---------|--------|
-| Centrality −\|z\| | Near origin → regime anchor | Positive |
-| Macro proximity −d(z, z_macro) | Near macro centre → macro-sensitive | Positive |
-| Cluster isolation d_knn | Far from neighbours → idiosyncratic | Positive |
+| Centrality (neg radius) | Near origin = regime anchor | Positive |
+| Macro proximity (neg dist) | Near macro centre = macro-sensitive | Positive |
+| Cluster isolation (knn dist) | Far from neighbours = idiosyncratic | Positive |
 
 **Distinct from GEOMETRIC-DEEP-LEARNING:** GDL uses Euclidean manifolds.
-This engine uses *hyperbolic* embedding space — fundamentally different geometry
-that preserves hierarchical structure with 2D representations.
+This engine uses hyperbolic embedding space — fundamentally different geometry
+that preserves hierarchical structure with just 2 dimensions.
         """)
 
     for universe_name, uni_data in universes1.items():
